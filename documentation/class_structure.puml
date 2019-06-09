@@ -247,9 +247,19 @@ class pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalQuery {
 pl.cezaryregec.zoo.actions.ActionQuery <|.. pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalQuery
 
 pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor : <<create>>
-pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> GetAnimalsByTypeQuery
+pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> RemoveAnimalQuery
 pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
 
+class pl.cezaryregec.zoo.actions.exit.ExitActionExecutor {
+    +execute (query : ExitQuery) : ResultDto
+}
+
+pl.cezaryregec.zoo.actions.exit.ExitExecutor --> pl.cezaryregec.zoo.actions.exit.ExitQuery : <<use>>
+
+class pl.cezaryregec.zoo.actions.exit.ExitQuery
+
+pl.cezaryregec.zoo.actions.ActionQuery <|.. pl.cezaryregec.zoo.actions.exit.ExitQuery
+pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.exit.ExitActionExecutor : <<create>>
 
 
 interface pl.cezaryregec.zoo.model.LivingCreature {

@@ -13,6 +13,7 @@ class MenuDictionary {
         DICTIONARY.put(ZooActionIndex.GET_ANIMALS, "Wyświetl zwierzęta w ZOO");
         DICTIONARY.put(ZooActionIndex.GET_ANIMALS_BY_TYPE, "Wyświetl zwierzęta w ZOO filtrując po typie");
         DICTIONARY.put(ZooActionIndex.REMOVE_ANIMAL, "Usuń zwierzę");
+        DICTIONARY.put(ZooActionIndex.EXIT, "Zakończ program");
     }
 
     private MenuDictionary() {}
