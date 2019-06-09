@@ -4,5 +4,6 @@ public enum ZooActionIndex {
     GET_MENU,
     ADD_ANIMAL,
     GET_ANIMALS,
-    GET_ANIMALS_BY_TYPE;
+    GET_ANIMALS_BY_TYPE,
+    REMOVE_ANIMAL;
 }

@@ -4,8 +4,8 @@ import pl.cezaryregec.zoo.model.animal.Elephant;
 import pl.cezaryregec.zoo.model.animal.Giraffe;
 import pl.cezaryregec.zoo.model.animal.Tiger;
 
-class AnimalTypeFactory {
-    static Class<?> create(AnimalType type) {
+public class AnimalTypeFactory {
+    public static Class<?> create(AnimalType type) {
         switch (type) {
             case GIRAFFE:
                 return Giraffe.class;

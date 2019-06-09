@@ -10,4 +10,5 @@ public interface Repository<Id, Model> extends Serializable {
     List<Model> getAll();
     void add(Model model);
     void remove(Model model);
+    boolean remove(Predicate<Model> predicate);
 }

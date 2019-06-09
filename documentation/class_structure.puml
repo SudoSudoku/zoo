@@ -98,6 +98,7 @@ enum pl.cezaryregec.zoo.actions.ZooActionIndex {
     +ADD_ANIMAL
     +GET_ANIMALS
     +GET_ANIMALS_BY_TYPE
+    +REMOVE_ANIMAL
 }
 
 pl.cezaryregec.zoo.actions.ZooActionIndex <-- pl.cezaryregec.zoo.actions.ZooActionFactory : <<use>>
@@ -173,7 +174,13 @@ enum pl.cezaryregec.zoo.actions.animals.AnimalType {
     +TIGER
 }
 
+class .pl.cezaryregec.zoo.actions.animals.AnimalTypeFactory {
+    +{static} create(type: AnimalType) : Class
+}
+
 pl.cezaryregec.zoo.actions.animals.AnimalType --o pl.cezaryregec.zoo.actions.animals.add.AddAnimalQuery
+pl.cezaryregec.zoo.actions.animals.AnimalTypeFactory --> pl.cezaryregec.zoo.actions.animals.AnimalType : <<use>>
+pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor --> pl.cezaryregec.zoo.actions.animals.AnimalTypeFactory : <<use>>
 
 class pl.cezaryregec.zoo.actions.animals.add.AddAnimalActionExecutor {
     +execute (query : AddAnimalQuery) : ResultDto
@@ -203,21 +210,46 @@ pl.cezaryregec.zoo.actions.animals.get.GetAnimalsActionExecutor --> pl.cezaryreg
 
 class pl.cezaryregec.zoo.actions.animals.get.GetAnimalsQuery
 
+pl.cezaryregec.zoo.actions.ActionQuery <|.. pl.cezaryregec.zoo.actions.animals.get.GetAnimalsQuery
+
 pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.get.GetAnimalsActionExecutor : <<create>>
 pl.cezaryregec.zoo.actions.animals.get.GetAnimalsActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> GetAnimalsQuery
 pl.cezaryregec.zoo.actions.animals.get.GetAnimalsActionExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
 
 class pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor {
-    +execute (query : GetAnimalsQuery) : ResultDto
+    +execute (query : GetAnimalsByTypeQuery) : ResultDto
 }
 
 pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor --> pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeQuery : <<use>>
 
-class pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeQuery
+class pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeQuery {
+    -type : AnimalType
+
+    +getType() : AnimalType
+}
+pl.cezaryregec.zoo.actions.ActionQuery <|.. pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeQuery
 
 pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor : <<create>>
 pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> GetAnimalsByTypeQuery
 pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
+
+class pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor {
+    +execute (query : RemoveAnimalQuery) : ResultDto
+}
+
+pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor --> pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalQuery : <<use>>
+
+class pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalQuery {
+    -name : String
+
+    +getName() : String
+}
+pl.cezaryregec.zoo.actions.ActionQuery <|.. pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalQuery
+
+pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor : <<create>>
+pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> GetAnimalsByTypeQuery
+pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
+
 
 
 interface pl.cezaryregec.zoo.model.LivingCreature {
@@ -260,6 +292,7 @@ interface pl.cezaryregec.zoo.repository.Repository<Id : Object, Model : Object> 
     +getAll() : List<Model>
     +add(model: Model)
     +remove(model: Model)
+    +remove(predicate: Predicate<Model>) : boolean
 }
 
 class pl.cezaryregec.zoo.repository.AnimalRepository {
@@ -269,6 +302,7 @@ class pl.cezaryregec.zoo.repository.AnimalRepository {
     +getAll() : List<Animal>
     +add(animal: Animal)
     +remove(animal: Animal)
+    +remove(predicate: Predicate<Animal>) : boolean
 }
 
 pl.cezaryregec.zoo.repository.Repository <|.. pl.cezaryregec.zoo.repository.AnimalRepository : <<bind>> \n Id -> String, \n Model -> Animal
