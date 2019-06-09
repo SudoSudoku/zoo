@@ -1,8 +1,8 @@
 package pl.cezaryregec.zoo.actions;
 
-import pl.cezaryregec.zoo.actions.animals.AddAnimalActionExecutor;
-import pl.cezaryregec.zoo.actions.animals.GetAnimalsActionExecutor;
-import pl.cezaryregec.zoo.actions.animals.GetAnimalsByTypeActionExecutor;
+import pl.cezaryregec.zoo.actions.animals.add.AddAnimalActionExecutor;
+import pl.cezaryregec.zoo.actions.animals.get.GetAnimalsActionExecutor;
+import pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor;
 import pl.cezaryregec.zoo.actions.menu.GetMenuActionExecutor;
 import pl.cezaryregec.zoo.utils.ReflectionUtils;
 

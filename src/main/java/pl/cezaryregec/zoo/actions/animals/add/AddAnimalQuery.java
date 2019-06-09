@@ -1,8 +1,9 @@
-package pl.cezaryregec.zoo.actions.animals;
+package pl.cezaryregec.zoo.actions.animals.add;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.cezaryregec.zoo.actions.ActionQuery;
+import pl.cezaryregec.zoo.actions.animals.AnimalType;
 import pl.cezaryregec.zoo.console.annotation.ReadableName;
 
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package pl.cezaryregec.zoo.actions.animals;
+package pl.cezaryregec.zoo.actions.animals.add;
 
 import pl.cezaryregec.zoo.model.animal.Animal;
 import pl.cezaryregec.zoo.model.animal.Elephant;

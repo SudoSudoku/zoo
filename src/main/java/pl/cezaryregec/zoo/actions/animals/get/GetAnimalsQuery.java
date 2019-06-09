@@ -1,4 +1,4 @@
-package pl.cezaryregec.zoo.actions.animals;
+package pl.cezaryregec.zoo.actions.animals.get;
 
 import pl.cezaryregec.zoo.actions.ActionQuery;
 

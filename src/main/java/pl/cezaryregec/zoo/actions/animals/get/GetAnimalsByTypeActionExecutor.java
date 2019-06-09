@@ -1,6 +1,7 @@
-package pl.cezaryregec.zoo.actions.animals;
+package pl.cezaryregec.zoo.actions.animals.get;
 
 import pl.cezaryregec.zoo.actions.ActionExecutor;
+import pl.cezaryregec.zoo.actions.animals.AnimalTypeFactory;
 import pl.cezaryregec.zoo.dto.result.ResultDto;
 import pl.cezaryregec.zoo.repository.AnimalRepository;
 import pl.cezaryregec.zoo.utils.ReflectionUtils;

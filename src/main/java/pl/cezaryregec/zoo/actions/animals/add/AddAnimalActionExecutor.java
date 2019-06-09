@@ -1,4 +1,4 @@
-package pl.cezaryregec.zoo.actions.animals;
+package pl.cezaryregec.zoo.actions.animals.add;
 
 import pl.cezaryregec.zoo.actions.ActionExecutor;
 import pl.cezaryregec.zoo.dto.result.ResultDto;
