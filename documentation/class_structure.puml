@@ -7,20 +7,63 @@ class ZooApplication {
 
 class ZooConsoleAdapter {
     + <<constructor>> ZooConsoleAdapter()
+    + nextCommand()
 }
 
 abstract class AbstractConsoleAdapter<Actions : ActionFactory> {
-    #actionMapper : Actions
+    - {static} DESERIALIZATION_CHAIN : List<Class<? extends DeserializationLink>>
+
+    #actions : Actions
     -scanner : Scanner
+    -isRunning : boolean
 
     + <<constructor>> AbstractConsoleAdapter(Actions actions)
-    +handleCommand()
-    #readInput() : String
-    #format(dto : ResultDto) : String
+    +{abstract} nextCommand()
+    +isRunning() : boolean
+    +execute()
+    #<Type : Object> readInput(type : Class<Type>) : Type
+    #format(result : ResultDto) : String
+    #shutDown()
 }
+
+class ReflectionUtils {
+    -<<constructor>> ReflectionUtils()
+    +{static} <Type : Object> createInstance(type : Class<Type>) : Type
+    +{static} setField(field : Field, object : Object, value : Value)
+}
+
+class ExitStateRequestException
+
+class RuntimeException
+
+ExitStateRequestException <|-- RuntimeException
+AbstractConsoleAdapter --> ExitStateRequestException : <<use>>
 
 ZooApplication --> ZooConsoleAdapter : <<use>>
 ZooConsoleAdapter <|-- AbstractConsoleAdapter : <<bind>> \n Actions -> ZooActionFactory
+
+AbstractConsoleAdapter --> ReflectionUtils : <<use>>
+
+interface DeserializationLink {
+    +deserialize(String input, Class<?> type) : Object
+}
+
+class StringDeserializationLink {
+    +deserialize(String input, Class<?> type) : Object
+}
+
+class IntegerDeserializationLink {
+    +deserialize(String input, Class<?> type) : Object
+}
+
+class BooleanDeserializationLink {
+    +deserialize(String input, Class<?> type) : Object
+}
+
+DeserializationLink <|.. StringDeserializationLink
+DeserializationLink <|.. IntegerDeserializationLink
+DeserializationLink <|.. BooleanDeserializationLink
+AbstractConsoleAdapter --> DeserializationLink  : <<use>>
 
 interface ActionFactory<ActionIndex : Enum> {
     +create(index: ActionIndex) : ActionExecutor
@@ -35,9 +78,6 @@ ZooActionFactory <-- ZooConsoleAdapter : <<use>>
 
 enum ZooActionIndex {
     +GET_MENU
-    +GET_CAGES
-    +ADD_CAGE
-    +ADD_ANIMAL
 }
 
 ZooActionIndex -- ZooActionFactory
@@ -61,17 +101,32 @@ interface ActionExecutor<Query : ActionQuery> {
 
 interface ActionQuery
 
-class EmptyQuery
+class GetMenuQuery
 
-EmptyQuery ..|> ActionQuery
+GetMenuQuery ..|> ActionQuery
 AbstractConsoleAdapter --> ResultDto : <<use>>
 
 class GetMenuActionExecutor {
-    +execute(query: EmptyQuery) : ResultDto
+    +execute(query: GetMenuQuery) : ResultDto
 }
 
-GetMenuActionExecutor --> EmptyQuery : <<use>>
-GetMenuActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> EmptyQuery
+class MenuDictionary {
+    - {static} DICTIONARY : Map<ZooActionIndex, String>
+
+    -<<constructor>> MenuDictionary()
+    + {static} get(index : ZooActionIndex) : String
+}
+
+class MenuItemFormatter {
+    -<<constructor>> MenuItemFormatter()
+    + {static} map(index : ZooActionIndex)
+}
+
+GetMenuActionExecutor --> MenuItemFormatter : <<use>>
+MenuItemFormatter --> MenuDictionary : <<use>>
+
+GetMenuActionExecutor --> GetMenuQuery : <<use>>
+GetMenuActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> GetMenuQuery
 ZooActionFactory --> GetMenuActionExecutor : <<create>>
 
 interface LivingCreature {
