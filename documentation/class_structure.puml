@@ -1,0 +1,135 @@
+@startuml
+interface Serializable
+
+class ZooApplication {
+    + {static} main()
+}
+
+class ZooConsoleAdapter {
+    + <<constructor>> ZooConsoleAdapter()
+}
+
+abstract class AbstractConsoleAdapter<Actions : ActionFactory> {
+    #actionMapper : Actions
+    -scanner : Scanner
+
+    + <<constructor>> AbstractConsoleAdapter(Actions actions)
+    +handleCommand()
+    #readInput() : String
+    #format(dto : ResultDto) : String
+}
+
+ZooApplication --> ZooConsoleAdapter : <<use>>
+ZooConsoleAdapter <|-- AbstractConsoleAdapter : <<bind>> \n Actions -> ZooActionFactory
+
+interface ActionFactory<ActionIndex : Enum> {
+    +create(index: ActionIndex) : ActionExecutor
+}
+
+class ZooActionFactory {
+    +create(index: ActionIndex) : ActionExecutor
+}
+
+ZooActionFactory ..|> ActionFactory : <<bind>> \n ActionIndex -> ZooActionIndex
+ZooActionFactory <-- ZooConsoleAdapter : <<use>>
+
+enum ZooActionIndex {
+    +GET_MENU
+    +GET_CAGES
+    +ADD_CAGE
+    +ADD_ANIMAL
+}
+
+ZooActionIndex -- ZooActionFactory
+
+class ResultDto<Result : Serializable> {
+    -result : Result
+    +toString() : String
+}
+
+class ListResultDto<Result : Serializable> {
+    -result : List<Result>
+    +toString() : String
+}
+
+ResultDto ..|> Serializable
+ResultDto <|-- ListResultDto
+
+interface ActionExecutor<Query : ActionQuery> {
+    +execute(query: Query) : ResultDto
+}
+
+interface ActionQuery
+
+class EmptyQuery
+
+EmptyQuery ..|> ActionQuery
+AbstractConsoleAdapter --> ResultDto : <<use>>
+
+class GetMenuActionExecutor {
+    +execute(query: EmptyQuery) : ResultDto
+}
+
+GetMenuActionExecutor --> EmptyQuery : <<use>>
+GetMenuActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> EmptyQuery
+ZooActionFactory --> GetMenuActionExecutor : <<create>>
+
+interface LivingCreature {
+    +getBirthday() : DateTime
+    +isAlive() : boolean
+}
+
+abstract class Animal {
+    #birthday: DateTime
+
+    +<<constructor>> Animal(birthday: DateTime)
+    +getBirthday() : DateTime
+    +isAlive() : boolean
+}
+
+LivingCreature <|.. Animal
+
+class Giraffe {
+    +<<constructor>> Giraffe(birthday: DateTime)
+}
+
+class Elephant {
+    +<<constructor>> Elephant(birthday: DateTime)
+}
+
+class Tiger {
+    +<<constructor>> Tiger(birthday: DateTime)
+}
+
+Animal <|-- Giraffe
+Animal <|-- Elephant
+Animal <|-- Tiger
+
+interface Cage<Creature : LivingCreature> {
+    +getOccupants(): List<Creature>
+    +add(occupant: Creature)
+    +free(occupant: Creature)
+}
+
+abstract class AnimalCage<AnimalOccupant : Animal> {
+    #occupants : List<AnimalOccupant>
+
+    +getOccupants(): List<AnimalOccupant>
+    +add(occupant: AnimalOccupant)
+    +free(occupant: AnimalOccupant)
+}
+
+Cage <|.. AnimalCage
+
+Animal "0..*" --o AnimalCage
+
+class GiraffeCage
+class ElephantCage
+class TigerCage
+
+AnimalCage <|-- GiraffeCage : <<bind>> \n AnimalOccupant -> Giraffe
+AnimalCage <|-- ElephantCage : <<bind>> \n AnimalOccupant -> Elephant
+AnimalCage <|-- TigerCage : <<bind>> \n AnimalOccupant -> Tiger
+
+hide interface fields
+@enduml
