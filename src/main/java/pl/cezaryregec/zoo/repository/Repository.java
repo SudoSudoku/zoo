@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 public interface Repository<Id, Model> extends Serializable {
     Model get(Id id);
     List<Model> get(Predicate<Model> predicate);
+    List<Model> getAll();
     void add(Model model);
     void remove(Model model);
 }

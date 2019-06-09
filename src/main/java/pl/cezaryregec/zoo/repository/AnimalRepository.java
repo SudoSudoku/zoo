@@ -29,13 +29,18 @@ public class AnimalRepository implements Repository<String, Animal> {
     }
 
     @Override
+    public synchronized List<Animal> getAll() {
+        return new ArrayList<>(repository);
+    }
+
+    @Override
     public synchronized void add(Animal animal) {
         repository.remove(animal);
         repository.add(animal);
     }
 
     @Override
-    public void remove(Animal animal) {
+    public synchronized void remove(Animal animal) {
         repository.remove(animal);
     }
 }

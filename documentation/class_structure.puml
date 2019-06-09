@@ -193,6 +193,17 @@ pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.anima
 pl.cezaryregec.zoo.actions.animals.AddAnimalActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> AddAnimalQuery
 pl.cezaryregec.zoo.actions.animals.AddAnimalActionExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
 
+class pl.cezaryregec.zoo.actions.GetAnimalsActionExecutor {
+    +execute (query : GetAnimalsQuery) : ResultDto
+}
+
+class pl.cezaryregec.zoo.actions.GetAnimalsQuery
+
+pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.GetAnimalsActionExecutor : <<create>>
+pl.cezaryregec.zoo.actions.animals.GetAnimalsActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> GetAnimalsQuery
+pl.cezaryregec.zoo.actions.animals.GetAnimalsActionExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
+
+
 interface pl.cezaryregec.zoo.model.LivingCreature {
     +getBirthday() : Date
     +isAlive() : boolean
@@ -256,6 +267,7 @@ pl.cezaryregec.zoo.model.cage.AnimalCage <|-- pl.cezaryregec.zoo.model.cage.Tige
 interface pl.cezaryregec.zoo.repository.Repository<Id : Object, Model : Object> {
     +get(id: Id) : Model
     +get(predicate: Predicate<Model>) : List<Model>
+    +getAll() : List<Model>
     +add(model: Model)
     +remove(model: Model)
 }
@@ -264,11 +276,13 @@ class pl.cezaryregec.zoo.repository.AnimalRepository {
     -repository : List<Animal>
     +get(id: String) : Animal
     +get(predicate: Predicate<Animal>) : List<Animal>
+    +getAll() : List<Animal>
     +add(animal: Animal)
     +remove(animal: Animal)
 }
 
 pl.cezaryregec.zoo.repository.Repository <|.. pl.cezaryregec.zoo.repository.AnimalRepository : <<bind>> \n Id -> String, \n Model -> Animal
 
+left to right direction
 hide interface fields
 @enduml

@@ -10,6 +10,7 @@ class MenuDictionary {
     static {
         DICTIONARY.put(ZooActionIndex.GET_MENU, "Menu dostępnych opcji");
         DICTIONARY.put(ZooActionIndex.ADD_ANIMAL, "Dodaj zwierzę");
+        DICTIONARY.put(ZooActionIndex.GET_ANIMALS, "Wyświetl zwierzęta w ZOO");
     }
 
     private MenuDictionary() {}
