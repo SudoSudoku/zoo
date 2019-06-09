@@ -2,6 +2,7 @@ package pl.cezaryregec.zoo.actions;
 
 import pl.cezaryregec.zoo.actions.animals.AddAnimalActionExecutor;
 import pl.cezaryregec.zoo.actions.animals.GetAnimalsActionExecutor;
+import pl.cezaryregec.zoo.actions.animals.GetAnimalsByTypeActionExecutor;
 import pl.cezaryregec.zoo.actions.menu.GetMenuActionExecutor;
 import pl.cezaryregec.zoo.utils.ReflectionUtils;
 
@@ -15,6 +16,7 @@ public class ZooActionFactory implements ActionFactory<ZooActionIndex> {
         EXECUTOR_MAP.put(ZooActionIndex.GET_MENU, GetMenuActionExecutor.class);
         EXECUTOR_MAP.put(ZooActionIndex.ADD_ANIMAL, AddAnimalActionExecutor.class);
         EXECUTOR_MAP.put(ZooActionIndex.GET_ANIMALS, GetAnimalsActionExecutor.class);
+        EXECUTOR_MAP.put(ZooActionIndex.GET_ANIMALS_BY_TYPE, GetAnimalsByTypeActionExecutor.class);
     }
 
     public ActionExecutor create(ZooActionIndex zooActionIndex) {

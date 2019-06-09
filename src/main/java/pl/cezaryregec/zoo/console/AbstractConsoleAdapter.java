@@ -8,6 +8,7 @@ import pl.cezaryregec.zoo.exception.ExitStateRequestException;
 import pl.cezaryregec.zoo.utils.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -45,8 +46,17 @@ public abstract class AbstractConsoleAdapter<Actions extends ActionFactory, Acti
             throw new IllegalStateException("Console is shut down");
         }
 
+        String executorMethodName = ActionExecutor.class.getDeclaredMethods()[0].getName();
+        Class<?> parameterType = ActionExecutor.class.getDeclaredMethods()[0].getParameterTypes()[0];
+
         ActionExecutor actionExecutor = actions.create(index);
-        Class<?> queryType = actionExecutor.getClass().getMethods()[0].getParameterTypes()[0];
+        Method[] declaredMethods = actionExecutor.getClass().getDeclaredMethods();
+        Class<?> queryType = Stream.of(declaredMethods)
+                .filter(method -> executorMethodName.equals(method.getName()) && method.getParameterTypes()[0] != parameterType)
+                .map(method -> method.getParameterTypes()[0])
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Class of type " + actionExecutor.getClass() + " is not a valid ActionExecutor"));
+
         ActionQuery query = (ActionQuery) ReflectionUtils.createInstance(queryType);
         Field[] declaredFields = queryType.getDeclaredFields();
 

@@ -96,6 +96,8 @@ pl.cezaryregec.zoo.actions.ZooActionFactory <-- pl.cezaryregec.zoo.console.ZooCo
 enum pl.cezaryregec.zoo.actions.ZooActionIndex {
     +GET_MENU
     +ADD_ANIMAL
+    +GET_ANIMALS
+    +GET_ANIMALS_BY_TYPE
 }
 
 pl.cezaryregec.zoo.actions.ZooActionIndex <-- pl.cezaryregec.zoo.actions.ZooActionFactory : <<use>>
@@ -193,15 +195,29 @@ pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.anima
 pl.cezaryregec.zoo.actions.animals.AddAnimalActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> AddAnimalQuery
 pl.cezaryregec.zoo.actions.animals.AddAnimalActionExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
 
-class pl.cezaryregec.zoo.actions.GetAnimalsActionExecutor {
+class pl.cezaryregec.zoo.actions.animals.GetAnimalsActionExecutor {
     +execute (query : GetAnimalsQuery) : ResultDto
 }
 
-class pl.cezaryregec.zoo.actions.GetAnimalsQuery
+pl.cezaryregec.zoo.actions.animals.GetAnimalsActionExecutor --> pl.cezaryregec.zoo.actions.animals.GetAnimalsQuery : <<use>>
+
+class pl.cezaryregec.zoo.actions.animals.GetAnimalsQuery
 
 pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.GetAnimalsActionExecutor : <<create>>
 pl.cezaryregec.zoo.actions.animals.GetAnimalsActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> GetAnimalsQuery
 pl.cezaryregec.zoo.actions.animals.GetAnimalsActionExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
+
+class pl.cezaryregec.zoo.actions.animals.GetAnimalsByTypeActionExecutor {
+    +execute (query : GetAnimalsQuery) : ResultDto
+}
+
+pl.cezaryregec.zoo.actions.animals.GetAnimalsByTypeActionExecutor --> pl.cezaryregec.zoo.actions.animals.GetAnimalsByTypeQuery : <<use>>
+
+class pl.cezaryregec.zoo.actions.animals.GetAnimalsByTypeQuery
+
+pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.GetAnimalsByTypeActionExecutor : <<create>>
+pl.cezaryregec.zoo.actions.animals.GetAnimalsByTypeActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> GetAnimalsByTypeQuery
+pl.cezaryregec.zoo.actions.animals.GetAnimalsByTypeActionExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
 
 
 interface pl.cezaryregec.zoo.model.LivingCreature {
