@@ -1,13 +1,8 @@
 package pl.cezaryregec.zoo.console;
 
-import pl.cezaryregec.zoo.actions.ActionExecutor;
-import pl.cezaryregec.zoo.actions.ActionFactory;
-import pl.cezaryregec.zoo.actions.ActionQuery;
+import pl.cezaryregec.zoo.actions.*;
 import pl.cezaryregec.zoo.console.annotation.ReadableName;
-import pl.cezaryregec.zoo.console.deserializers.BooleanDeserializationLink;
-import pl.cezaryregec.zoo.console.deserializers.DeserializationLink;
-import pl.cezaryregec.zoo.console.deserializers.IntegerDeserializationLink;
-import pl.cezaryregec.zoo.console.deserializers.StringDeserializationLink;
+import pl.cezaryregec.zoo.console.deserializers.*;
 import pl.cezaryregec.zoo.dto.result.ResultDto;
 import pl.cezaryregec.zoo.exception.ExitStateRequestException;
 import pl.cezaryregec.zoo.utils.ReflectionUtils;
@@ -18,18 +13,19 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractConsoleAdapter<Actions extends ActionFactory, ActionIndex extends Enum<ActionIndex>> {
+public abstract class AbstractConsoleAdapter<Actions extends ActionFactory, ActionIndex extends Enum<ActionIndex>> implements ConsoleAdapter<ActionIndex> {
     private static final List<Class<? extends DeserializationLink>> DESERIALIZATION_CHAIN = Stream.of(
             StringDeserializationLink.class,
             IntegerDeserializationLink.class,
-            BooleanDeserializationLink.class
+            BooleanDeserializationLink.class,
+            EnumDeserializationLink.class
     ).collect(Collectors.toList());
 
     private final Scanner SCANNER = new Scanner(System.in);
     protected final Actions actions;
     protected boolean isRunning = true;
 
-    public AbstractConsoleAdapter(Actions actions) {
+    protected AbstractConsoleAdapter(Actions actions) {
         this.actions = actions;
     }
 
@@ -56,14 +52,13 @@ public abstract class AbstractConsoleAdapter<Actions extends ActionFactory, Acti
 
         for (Field field : declaredFields) {
             String name = field.getName();
+            String options = createOptionsForField(field);
             if (field.isAnnotationPresent(ReadableName.class)) {
                 name = field.getAnnotation(ReadableName.class).value();
             }
 
-            System.out.print(name + ": ");
-            Class<?> type = field.getType();
-
-            ReflectionUtils.setField(field, query, readInput(type));
+            System.out.print(name + options + ": ");
+            ReflectionUtils.setField(field, query, readInput(field.getType()));
         }
 
         try {
@@ -74,10 +69,23 @@ public abstract class AbstractConsoleAdapter<Actions extends ActionFactory, Acti
         }
     }
 
+    private String createOptionsForField(Field field) {
+        Class<?> type = field.getType();
+        if (type.getSuperclass() == Enum.class) {
+            List<String> constants = Stream.of(type.getDeclaredFields())
+                    .map(Field::getName)
+                    .filter(item -> !"$VALUES".equals(item))
+                    .collect(Collectors.toList());
+
+            return " (" + String.join(", ", constants) + ")";
+        }
+        return "";
+    }
+
     protected <T> T readInput(Class<T> type) {
         String input = SCANNER.nextLine();
         for (Class<? extends DeserializationLink> linkClass : DESERIALIZATION_CHAIN) {
-            DeserializationLink link = ReflectionUtils.createInstance(linkClass);
+            DeserializationLink link = ReflectionUtils.getInstance(linkClass);
             Object result = link.deserialize(input, type);
 
             if (result != null) {

@@ -16,6 +16,6 @@ public class GetMenuActionExecutor implements ActionExecutor<GetMenuQuery> {
                 .map(MenuItemFormatter::map)
                 .collect(Collectors.toList());
 
-        return new ListResultDto<String>(result);
+        return ResultDto.of(result);
     }
 }

@@ -9,6 +9,7 @@ class MenuDictionary {
     private static final Map<ZooActionIndex, String> DICTIONARY = new HashMap<>();
     static {
         DICTIONARY.put(ZooActionIndex.GET_MENU, "Menu dostępnych opcji");
+        DICTIONARY.put(ZooActionIndex.ADD_ANIMAL, "Dodaj zwierzę");
     }
 
     private MenuDictionary() {}

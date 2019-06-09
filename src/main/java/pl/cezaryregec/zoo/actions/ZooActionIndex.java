@@ -1,5 +1,6 @@
 package pl.cezaryregec.zoo.actions;
 
 public enum ZooActionIndex {
-    GET_MENU
+    GET_MENU,
+    ADD_ANIMAL
 }
