@@ -1,0 +1,23 @@
+@startuml
+left to right direction
+:Pracownik ZOO:
+:Repozytorium zwierząt:
+rectangle "system ZOO" {
+    :Pracownik ZOO: - (pobranie listy opcji)
+    :Pracownik ZOO: - (dodanie zwierzęcia)
+    (dodanie zwierzęcia) -- :Repozytorium zwierząt:
+    (podanie typu) <. (dodanie zwierzęcia) : <<include>>
+    (podanie imienia) <. (dodanie zwierzęcia) : <<include>>
+    (podanie wieku) <. (dodanie zwierzęcia)  : <<include>>
+    :Pracownik ZOO: - (wyświetlenie listy zwierząt)
+    (wyświetlenie listy zwierząt) -- :Repozytorium zwierząt:
+    :Pracownik ZOO: - (wyświetlenie zwierząt po typie)
+    (wyświetlenie zwierząt po typie) -- :Repozytorium zwierząt:
+    (podanie typu filtrowanego) <. (wyświetlenie zwierząt po typie) : <<include>>
+    :Pracownik ZOO: -- (usunięcie zwierzęcia)
+    (usunięcie zwierzęcia) -- :Repozytorium zwierząt:
+    (podanie imienia zwierzęcia) <. (usunięcie zwierzęcia) : <<include>>
+    (wyświetlenie listy zwierząt) <. (wyświetlenie zwierząt po typie)  : <<extend>>
+    :Pracownik ZOO: -- (zakończenie programu)
+}
+@enduml
