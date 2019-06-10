@@ -1,22 +1,22 @@
 @startuml
 interface java.io.Serializable
 
-class pl.cezaryregec.zoo.ZooApplication {
+class ZooApplication {
     + {static} main()
 }
 
-class pl.cezaryregec.zoo.console.ZooConsoleAdapter {
+class ZooConsoleAdapter {
     + <<constructor>> ZooConsoleAdapter()
     + nextCommand()
 }
 
-interface pl.cezaryregec.zoo.console.ConsoleAdapter<Actions : ActionFactory> {
+interface ConsoleAdapter<Actions : ActionFactory> {
     +nextCommand()
     +isRunning() : boolean
     +execute()
 }
 
-abstract class pl.cezaryregec.zoo.console.AbstractConsoleAdapter<Actions : ActionFactory> {
+abstract class AbstractConsoleAdapter<Actions : ActionFactory> {
     - {static} DESERIALIZATION_CHAIN : List<Class<? extends DeserializationLink>>
 
     #actions : Actions
@@ -33,9 +33,9 @@ abstract class pl.cezaryregec.zoo.console.AbstractConsoleAdapter<Actions : Actio
     -createOptionsForField(field: Field) : String
 }
 
-pl.cezaryregec.zoo.console.ConsoleAdapter <|.. pl.cezaryregec.zoo.console.AbstractConsoleAdapter
+ConsoleAdapter <|.. AbstractConsoleAdapter
 
-class pl.cezaryregec.zoo.utils.ReflectionUtils {
+class  ReflectionUtils {
     -{static} IMPLEMENTATIONS : Map<Class, Object>
     -<<constructor>> ReflectionUtils()
     +{static} <Type : Object> bindInstance(type : Class<Type>, instanceClass : Class<? extends Type>)
@@ -45,55 +45,55 @@ class pl.cezaryregec.zoo.utils.ReflectionUtils {
     +{static} setField(field : Field, object : Object, value : Value)
 }
 
-class pl.cezaryregec.zoo.exception.ShutdownRequestException
+class ShutdownRequestException
 
-pl.cezaryregec.zoo.exception.ShutdownRequestException <|-- java.lang.RuntimeException
-pl.cezaryregec.zoo.console.AbstractConsoleAdapter --> pl.cezaryregec.zoo.exception.ShutdownRequestException : <<use>>
+ShutdownRequestException <|-- java.lang.RuntimeException
+AbstractConsoleAdapter --> ShutdownRequestException : <<use>>
 
-pl.cezaryregec.zoo.ZooApplication --> pl.cezaryregec.zoo.console.ZooConsoleAdapter : <<use>>
-pl.cezaryregec.zoo.console.AbstractConsoleAdapter <|-- pl.cezaryregec.zoo.console.ZooConsoleAdapter : <<bind>> \n Actions -> ZooActionFactory
+ZooApplication --> ZooConsoleAdapter : <<use>>
+AbstractConsoleAdapter <|-- ZooConsoleAdapter : <<bind>> \n Actions -> ZooActionFactory
 
-pl.cezaryregec.zoo.console.AbstractConsoleAdapter --> pl.cezaryregec.zoo.utils.ReflectionUtils : <<use>>
+AbstractConsoleAdapter -->  ReflectionUtils : <<use>>
 
-interface pl.cezaryregec.zoo.console.deserialization.DeserializationLink {
+interface DeserializationLink {
     +deserialize(String input, Class type) : Object
 }
 
-class pl.cezaryregec.zoo.console.deserialization.StringDeserializationLink {
+class StringDeserializationLink {
     +deserialize(String input, Class type) : Object
 }
 
-class pl.cezaryregec.zoo.console.deserialization.IntegerDeserializationLink {
+class IntegerDeserializationLink {
     +deserialize(String input, Class type) : Object
 }
 
-class pl.cezaryregec.zoo.console.deserialization.BooleanDeserializationLink {
+class BooleanDeserializationLink {
     +deserialize(String input, Class type) : Object
 }
 
-class pl.cezaryregec.zoo.console.deserialization.EnumDeserializationLink {
+class EnumDeserializationLink {
     +deserialize(String input, Class type) : Object
 }
 
-pl.cezaryregec.zoo.console.deserialization.DeserializationLink <|.. pl.cezaryregec.zoo.console.deserialization.StringDeserializationLink
-pl.cezaryregec.zoo.console.deserialization.DeserializationLink <|.. pl.cezaryregec.zoo.console.deserialization.IntegerDeserializationLink
-pl.cezaryregec.zoo.console.deserialization.DeserializationLink <|.. pl.cezaryregec.zoo.console.deserialization.BooleanDeserializationLink
-pl.cezaryregec.zoo.console.deserialization.DeserializationLink <|.. pl.cezaryregec.zoo.console.deserialization.EnumDeserializationLink
-pl.cezaryregec.zoo.console.AbstractConsoleAdapter --> pl.cezaryregec.zoo.console.deserialization.DeserializationLink  : <<use>>
+DeserializationLink <|.. StringDeserializationLink
+DeserializationLink <|.. IntegerDeserializationLink
+DeserializationLink <|.. BooleanDeserializationLink
+DeserializationLink <|.. EnumDeserializationLink
+AbstractConsoleAdapter --> DeserializationLink  : <<use>>
 
-interface pl.cezaryregec.zoo.actions.ActionFactory<ActionIndex : Enum> {
+interface ActionFactory<ActionIndex : Enum> {
     +create(index: ActionIndex) : ActionExecutor
 }
 
-class pl.cezaryregec.zoo.actions.ZooActionFactory {
+class ZooActionFactory {
     -{static} EXECUTOR_MAP : Map<ZooActionIndex, ActionExecutor>
     +create(index: ActionIndex) : ActionExecutor
 }
 
-pl.cezaryregec.zoo.actions.ZooActionFactory ..|> pl.cezaryregec.zoo.actions.ActionFactory : <<bind>> \n ActionIndex -> ZooActionIndex
-pl.cezaryregec.zoo.actions.ZooActionFactory <-- pl.cezaryregec.zoo.console.ZooConsoleAdapter : <<use>>
+ZooActionFactory ..|> ActionFactory : <<bind>> \n ActionIndex -> ZooActionIndex
+ZooActionFactory <-- ZooConsoleAdapter : <<use>>
 
-enum pl.cezaryregec.zoo.actions.ZooActionIndex {
+enum ZooActionIndex {
     +GET_MENU
     +ADD_ANIMAL
     +GET_ANIMALS
@@ -101,58 +101,58 @@ enum pl.cezaryregec.zoo.actions.ZooActionIndex {
     +REMOVE_ANIMAL
 }
 
-pl.cezaryregec.zoo.actions.ZooActionIndex <-- pl.cezaryregec.zoo.actions.ZooActionFactory : <<use>>
+ZooActionIndex <-- ZooActionFactory : <<use>>
 
-class pl.cezaryregec.zoo.dto.result.ResultDto<Result : Serializable> {
+class ResultDto<Result : Serializable> {
     -result : Result
     +toString() : String
     +{static} <Type : Serializable> of(result: Type) : ResultDto<Type>
     +{static} <Type : Serializable> of(result: List<Type>) : ResultDto<Type>
 }
 
-class pl.cezaryregec.zoo.dto.result.ListResultDto<Result : Serializable> {
+class ListResultDto<Result : Serializable> {
     -result : List<Result>
     +toString() : String
 }
 
-pl.cezaryregec.zoo.dto.result.ResultDto ..|> java.io.Serializable
-pl.cezaryregec.zoo.dto.result.ResultDto <|-- pl.cezaryregec.zoo.dto.result.ListResultDto
+ResultDto ..|> java.io.Serializable
+ResultDto <|-- ListResultDto
 
-interface pl.cezaryregec.zoo.actions.ActionExecutor<Query : ActionQuery> {
+interface ActionExecutor<Query : ActionQuery> {
     +execute(query: Query) : ResultDto
 }
 
-interface pl.cezaryregec.zoo.actions.ActionQuery
+interface ActionQuery
 
-class pl.cezaryregec.zoo.actions.menu.GetMenuQuery
+class GetMenuQuery
 
-pl.cezaryregec.zoo.actions.menu.GetMenuQuery ..|> pl.cezaryregec.zoo.actions.ActionQuery
-pl.cezaryregec.zoo.console.AbstractConsoleAdapter --> pl.cezaryregec.zoo.dto.result.ResultDto : <<use>>
+GetMenuQuery ..|> ActionQuery
+AbstractConsoleAdapter --> ResultDto : <<use>>
 
-class pl.cezaryregec.zoo.actions.menu.GetMenuActionExecutor {
+class GetMenuActionExecutor {
     +execute(query: GetMenuQuery) : ResultDto
 }
 
-class pl.cezaryregec.zoo.actions.menu.MenuDictionary {
+class MenuDictionary {
     - {static} DICTIONARY : Map<ZooActionIndex, String>
 
     -<<constructor>> MenuDictionary()
     + {static} get(index : ZooActionIndex) : String
 }
 
-class pl.cezaryregec.zoo.actions.menu.MenuItemFormatter {
+class MenuItemFormatter {
     -<<constructor>> MenuItemFormatter()
     + {static} map(index : ZooActionIndex)
 }
 
-pl.cezaryregec.zoo.actions.menu.GetMenuActionExecutor --> pl.cezaryregec.zoo.actions.menu.MenuItemFormatter : <<use>>
-pl.cezaryregec.zoo.actions.menu.MenuItemFormatter --> pl.cezaryregec.zoo.actions.menu.MenuDictionary : <<use>>
+GetMenuActionExecutor --> MenuItemFormatter : <<use>>
+MenuItemFormatter --> MenuDictionary : <<use>>
 
-pl.cezaryregec.zoo.actions.menu.GetMenuActionExecutor --> pl.cezaryregec.zoo.actions.menu.GetMenuQuery : <<use>>
-pl.cezaryregec.zoo.actions.menu.GetMenuActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> GetMenuQuery
-pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.menu.GetMenuActionExecutor : <<create>>
+GetMenuActionExecutor --> GetMenuQuery : <<use>>
+GetMenuActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> GetMenuQuery
+ZooActionFactory --> GetMenuActionExecutor : <<create>>
 
-class pl.cezaryregec.zoo.actions.animals.add.AddAnimalQuery {
+class  AddAnimalQuery {
     -type : AnimalType
     -name : String
     -yearOfBirth : Integer
@@ -166,108 +166,108 @@ class pl.cezaryregec.zoo.actions.animals.add.AddAnimalQuery {
     +getDayOfBirth() : Integer
 }
 
-pl.cezaryregec.zoo.actions.ActionQuery <|.. pl.cezaryregec.zoo.actions.animals.add.AddAnimalQuery
+ActionQuery <|..  AddAnimalQuery
 
-enum pl.cezaryregec.zoo.actions.animals.AnimalType {
+enum AnimalType {
     +GIRAFFE
     +ELEPHANT
     +TIGER
 }
 
-class .pl.cezaryregec.zoo.actions.animals.AnimalTypeFactory {
+class AnimalTypeFactory {
     +{static} create(type: AnimalType) : Class
 }
 
-pl.cezaryregec.zoo.actions.animals.AnimalType --o pl.cezaryregec.zoo.actions.animals.add.AddAnimalQuery
-pl.cezaryregec.zoo.actions.animals.AnimalTypeFactory --> pl.cezaryregec.zoo.actions.animals.AnimalType : <<use>>
-pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor --> pl.cezaryregec.zoo.actions.animals.AnimalTypeFactory : <<use>>
+AnimalType --o  AddAnimalQuery
+AnimalTypeFactory --> AnimalType : <<use>>
+ GetAnimalsByTypeActionExecutor --> AnimalTypeFactory : <<use>>
 
-class pl.cezaryregec.zoo.actions.animals.add.AddAnimalActionExecutor {
+class  AddAnimalActionExecutor {
     +execute (query : AddAnimalQuery) : ResultDto
 }
 
-pl.cezaryregec.zoo.actions.animals.add.AddAnimalActionExecutor --> pl.cezaryregec.zoo.actions.animals.add.AddAnimalQuery : <<use>>
+ AddAnimalActionExecutor -->  AddAnimalQuery : <<use>>
 
-class pl.cezaryregec.zoo.actions.animals.add.AnimalFactory {
+class  AnimalFactory {
     + {static} create(AddAnimalQuery query) : Animal
 }
 
-pl.cezaryregec.zoo.actions.animals.add.AddAnimalActionExecutor --> pl.cezaryregec.zoo.actions.animals.add.AnimalFactory : <<use>>
+ AddAnimalActionExecutor -->  AnimalFactory : <<use>>
 
-pl.cezaryregec.zoo.actions.animals.add.AnimalFactory --> pl.cezaryregec.zoo.model.animal.Giraffe : <<create>>
-pl.cezaryregec.zoo.actions.animals.add.AnimalFactory --> pl.cezaryregec.zoo.model.animal.Elephant : <<create>>
-pl.cezaryregec.zoo.actions.animals.add.AnimalFactory --> pl.cezaryregec.zoo.model.animal.Tiger : <<create>>
+ AnimalFactory --> Giraffe : <<create>>
+ AnimalFactory --> Elephant : <<create>>
+ AnimalFactory --> Tiger : <<create>>
 
-pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.add.AddAnimalActionExecutor : <<create>>
-pl.cezaryregec.zoo.actions.animals.add.AddAnimalActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> AddAnimalQuery
-pl.cezaryregec.zoo.actions.animals.add.AddAnimalActionExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
+ZooActionFactory -->  AddAnimalActionExecutor : <<create>>
+ AddAnimalActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> AddAnimalQuery
+ AddAnimalActionExecutor --> AnimalRepository : <<use>>
 
-class pl.cezaryregec.zoo.actions.animals.get.GetAnimalsActionExecutor {
+class  GetAnimalsActionExecutor {
     +execute (query : GetAnimalsQuery) : ResultDto
 }
 
-pl.cezaryregec.zoo.actions.animals.get.GetAnimalsActionExecutor --> pl.cezaryregec.zoo.actions.animals.get.GetAnimalsQuery : <<use>>
+ GetAnimalsActionExecutor -->  GetAnimalsQuery : <<use>>
 
-class pl.cezaryregec.zoo.actions.animals.get.GetAnimalsQuery
+class  GetAnimalsQuery
 
-pl.cezaryregec.zoo.actions.ActionQuery <|.. pl.cezaryregec.zoo.actions.animals.get.GetAnimalsQuery
+ActionQuery <|..  GetAnimalsQuery
 
-pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.get.GetAnimalsActionExecutor : <<create>>
-pl.cezaryregec.zoo.actions.animals.get.GetAnimalsActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> GetAnimalsQuery
-pl.cezaryregec.zoo.actions.animals.get.GetAnimalsActionExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
+ZooActionFactory -->  GetAnimalsActionExecutor : <<create>>
+ GetAnimalsActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> GetAnimalsQuery
+ GetAnimalsActionExecutor --> AnimalRepository : <<use>>
 
-class pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor {
+class  GetAnimalsByTypeActionExecutor {
     +execute (query : GetAnimalsByTypeQuery) : ResultDto
 }
 
-pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor --> pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeQuery : <<use>>
+ GetAnimalsByTypeActionExecutor -->  GetAnimalsByTypeQuery : <<use>>
 
-class pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeQuery {
+class  GetAnimalsByTypeQuery {
     -type : AnimalType
 
     +getType() : AnimalType
 }
-pl.cezaryregec.zoo.actions.ActionQuery <|.. pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeQuery
+ActionQuery <|..  GetAnimalsByTypeQuery
 
-pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor : <<create>>
-pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> GetAnimalsByTypeQuery
-pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeActionExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
+ZooActionFactory -->  GetAnimalsByTypeActionExecutor : <<create>>
+ GetAnimalsByTypeActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> GetAnimalsByTypeQuery
+ GetAnimalsByTypeActionExecutor --> AnimalRepository : <<use>>
 
-class pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor {
+class RemoveAnimalExecutor {
     +execute (query : RemoveAnimalQuery) : ResultDto
 }
 
-pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor --> pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalQuery : <<use>>
+RemoveAnimalExecutor --> RemoveAnimalQuery : <<use>>
 
-class pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalQuery {
+class RemoveAnimalQuery {
     -name : String
 
     +getName() : String
 }
-pl.cezaryregec.zoo.actions.ActionQuery <|.. pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalQuery
+ActionQuery <|.. RemoveAnimalQuery
 
-pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor : <<create>>
-pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor ..|> pl.cezaryregec.zoo.actions.ActionExecutor : <<bind>> \n Query -> RemoveAnimalQuery
-pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalExecutor --> pl.cezaryregec.zoo.repository.AnimalRepository : <<use>>
+ZooActionFactory --> RemoveAnimalExecutor : <<create>>
+RemoveAnimalExecutor ..|> ActionExecutor : <<bind>> \n Query -> RemoveAnimalQuery
+RemoveAnimalExecutor --> AnimalRepository : <<use>>
 
-class pl.cezaryregec.zoo.actions.shutdown.ShutdownActionExecutor {
+class ShutdownActionExecutor {
     +execute (query : ExitQuery) : ResultDto
 }
 
-pl.cezaryregec.zoo.actions.shutdown.ShutdownActionExecutor --> pl.cezaryregec.zoo.actions.shutdown.ShutdownQuery : <<use>>
+ShutdownActionExecutor --> ShutdownQuery : <<use>>
 
-class pl.cezaryregec.zoo.actions.shutdown.ShutdownQuery
+class ShutdownQuery
 
-pl.cezaryregec.zoo.actions.ActionQuery <|.. pl.cezaryregec.zoo.actions.shutdown.ShutdownQuery
-pl.cezaryregec.zoo.actions.ZooActionFactory --> pl.cezaryregec.zoo.actions.shutdown.ShutdownActionExecutor : <<create>>
+ActionQuery <|.. ShutdownQuery
+ZooActionFactory --> ShutdownActionExecutor : <<create>>
 
 
-interface pl.cezaryregec.zoo.model.LivingCreature {
+interface LivingCreature {
     +getBirthday() : Date
     +isAlive() : boolean
 }
 
-abstract class pl.cezaryregec.zoo.model.animal.Animal {
+abstract class Animal {
     #birthday: Date
     #name: String
     #alive: boolean
@@ -278,25 +278,25 @@ abstract class pl.cezaryregec.zoo.model.animal.Animal {
     +isAlive() : boolean
 }
 
-pl.cezaryregec.zoo.model.LivingCreature <|.. pl.cezaryregec.zoo.model.animal.Animal
+LivingCreature <|.. Animal
 
-class pl.cezaryregec.zoo.model.animal.Giraffe {
+class Giraffe {
     +<<constructor>> Giraffe(birthday: Date)
 }
 
-class pl.cezaryregec.zoo.model.animal.Elephant {
+class Elephant {
     +<<constructor>> Elephant(birthday: Date)
 }
 
-class pl.cezaryregec.zoo.model.animal.Tiger {
+class Tiger {
     +<<constructor>> Tiger(birthday: Date)
 }
 
-pl.cezaryregec.zoo.model.animal.Animal <|-- pl.cezaryregec.zoo.model.animal.Giraffe
-pl.cezaryregec.zoo.model.animal.Animal <|-- pl.cezaryregec.zoo.model.animal.Elephant
-pl.cezaryregec.zoo.model.animal.Animal <|-- pl.cezaryregec.zoo.model.animal.Tiger
+Animal <|-- Giraffe
+Animal <|-- Elephant
+Animal <|-- Tiger
 
-interface pl.cezaryregec.zoo.repository.Repository<Id : Object, Model : Object> {
+interface Repository<Id : Object, Model : Object> {
     +get(id: Id) : Model
     +get(predicate: Predicate<Model>) : List<Model>
     +getAll() : List<Model>
@@ -306,7 +306,7 @@ interface pl.cezaryregec.zoo.repository.Repository<Id : Object, Model : Object> 
     +removeAll()
 }
 
-class pl.cezaryregec.zoo.repository.AnimalRepository {
+class AnimalRepository {
     -repository : List<Animal>
     +get(id: String) : Animal
     +get(predicate: Predicate<Animal>) : List<Animal>
@@ -317,8 +317,8 @@ class pl.cezaryregec.zoo.repository.AnimalRepository {
     +removeAll()
 }
 
-pl.cezaryregec.zoo.repository.Repository <|.. pl.cezaryregec.zoo.repository.AnimalRepository : <<bind>> \n Id -> String, \n Model -> Animal
-pl.cezaryregec.zoo.repository.AnimalRepository o-- pl.cezaryregec.zoo.model.animal.Animal
+Repository <|.. AnimalRepository : <<bind>> \n Id -> String, \n Model -> Animal
+AnimalRepository o-- Animal
 
 left to right direction
 hide interface fields
