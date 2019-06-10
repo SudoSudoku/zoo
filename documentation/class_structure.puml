@@ -254,7 +254,7 @@ class pl.cezaryregec.zoo.actions.exit.ExitActionExecutor {
     +execute (query : ExitQuery) : ResultDto
 }
 
-pl.cezaryregec.zoo.actions.exit.ExitExecutor --> pl.cezaryregec.zoo.actions.exit.ExitQuery : <<use>>
+pl.cezaryregec.zoo.actions.exit.ExitActionExecutor --> pl.cezaryregec.zoo.actions.exit.ExitQuery : <<use>>
 
 class pl.cezaryregec.zoo.actions.exit.ExitQuery
 
