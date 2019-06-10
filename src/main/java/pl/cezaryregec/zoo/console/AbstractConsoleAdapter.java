@@ -4,7 +4,7 @@ import pl.cezaryregec.zoo.actions.*;
 import pl.cezaryregec.zoo.console.annotation.ReadableName;
 import pl.cezaryregec.zoo.console.deserializers.*;
 import pl.cezaryregec.zoo.dto.result.ResultDto;
-import pl.cezaryregec.zoo.exception.ExitStateRequestException;
+import pl.cezaryregec.zoo.exception.ShutdownRequestException;
 import pl.cezaryregec.zoo.utils.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -74,7 +74,7 @@ public abstract class AbstractConsoleAdapter<Actions extends ActionFactory, Acti
         try {
             ResultDto resultDto = actionExecutor.execute(query);
             System.out.println(format(resultDto));
-        } catch(ExitStateRequestException exit) {
+        } catch(ShutdownRequestException exit) {
             shutDown();
         }
     }

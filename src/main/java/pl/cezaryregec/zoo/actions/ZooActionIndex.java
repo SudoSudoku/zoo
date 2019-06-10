@@ -6,5 +6,5 @@ public enum ZooActionIndex {
     GET_ANIMALS,
     GET_ANIMALS_BY_TYPE,
     REMOVE_ANIMAL,
-    EXIT;
+    SHUTDOWN;
 }

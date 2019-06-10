@@ -19,7 +19,7 @@ public class MenuTest extends PolishScenarioTest<AnimalRepositoryStage, Applicat
                 "[GET_ANIMALS] Wyświetl zwierzęta w ZOO",
                 "[GET_ANIMALS_BY_TYPE] Wyświetl zwierzęta w ZOO filtrując po typie",
                 "[REMOVE_ANIMAL] Usuń zwierzę",
-                "[EXIT] Zakończ program"
+                "[SHUTDOWN] Zakończ program"
         );
     }
 }
