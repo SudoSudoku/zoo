@@ -2,7 +2,7 @@
 interface java.io.Serializable
 
 class ZooApplication {
-    + {static} main()
+    + {static} main(args: String[])
 }
 
 class ZooConsoleAdapter {
