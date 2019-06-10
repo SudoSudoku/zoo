@@ -1,9 +1,9 @@
-package pl.cezaryregec.zoo;
+package pl.cezaryregec.zoo.scenario;
 
 import com.tngtech.jgiven.junit.ScenarioTest;
 
 public class PolishScenarioTest<ZAKLADAJAC, KIEDY, WTEDY> extends ScenarioTest<ZAKLADAJAC, KIEDY, WTEDY> {
-    public ZAKLADAJAC zakladajacZe() {
+    public ZAKLADAJAC zakładającŻe() {
         return getScenario().given("Zakładając że");
     }
 

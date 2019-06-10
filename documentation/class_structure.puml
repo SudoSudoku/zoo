@@ -303,6 +303,7 @@ interface pl.cezaryregec.zoo.repository.Repository<Id : Object, Model : Object> 
     +add(model: Model)
     +remove(model: Model)
     +remove(predicate: Predicate<Model>) : boolean
+    +removeAll()
 }
 
 class pl.cezaryregec.zoo.repository.AnimalRepository {
@@ -313,6 +314,7 @@ class pl.cezaryregec.zoo.repository.AnimalRepository {
     +add(animal: Animal)
     +remove(animal: Animal)
     +remove(predicate: Predicate<Animal>) : boolean
+    +removeAll()
 }
 
 pl.cezaryregec.zoo.repository.Repository <|.. pl.cezaryregec.zoo.repository.AnimalRepository : <<bind>> \n Id -> String, \n Model -> Animal

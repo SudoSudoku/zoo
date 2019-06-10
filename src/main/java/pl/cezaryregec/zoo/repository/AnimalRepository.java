@@ -48,4 +48,9 @@ public class AnimalRepository implements Repository<String, Animal> {
     public synchronized boolean remove(Predicate<Animal> predicate) {
         return repository.removeIf(predicate);
     }
+
+    @Override
+    public synchronized void removeAll() {
+        repository.clear();
+    }
 }
