@@ -255,6 +255,7 @@ class ShutdownActionExecutor {
 }
 
 ShutdownActionExecutor --> ShutdownQuery : <<use>>
+ShutdownActionExecutor --> ShutdownRequestException : <<create>>
 
 class ShutdownQuery
 
