@@ -10,6 +10,8 @@ import java.time.LocalDate;
 
 public class AnimalPrototypes {
 
+    public static final LocalDate BIRTHDAY = LocalDate.of(2000, 1, 1);
+
     public static Animal create(AnimalType type, String name) {
         switch (type) {
             case GIRAFFE:
@@ -23,14 +25,14 @@ public class AnimalPrototypes {
     }
 
     public static Giraffe createGiraffe(String name) {
-        return new Giraffe(name, LocalDate.now());
+        return new Giraffe(name, BIRTHDAY);
     }
 
     public static Elephant createElephant(String name) {
-        return new Elephant(name, LocalDate.now());
+        return new Elephant(name, BIRTHDAY);
     }
 
     public static Tiger createTiger(String name) {
-        return new Tiger(name, LocalDate.now());
+        return new Tiger(name, BIRTHDAY);
     }
 }

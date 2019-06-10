@@ -13,7 +13,7 @@ public class MenuTest extends PolishScenarioTest<AnimalRepositoryStage, Applicat
     @Test
     public void menu() {
         kiedy().wybieramOpcję(ZooActionIndex.GET_MENU, GetMenuQuery.class);
-        wtedy().wynikZawiera(
+        wtedy().wynikZawieraTylko(
                 "[GET_MENU] Menu dostępnych opcji",
                 "[ADD_ANIMAL] Dodaj zwierzę",
                 "[GET_ANIMALS] Wyświetl zwierzęta w ZOO",

@@ -9,6 +9,8 @@ import org.junit.runner.RunWith;
 import pl.cezaryregec.zoo.actions.ZooActionIndex;
 import pl.cezaryregec.zoo.actions.animals.AnimalType;
 import pl.cezaryregec.zoo.actions.animals.add.AddAnimalQuery;
+import pl.cezaryregec.zoo.actions.animals.get.GetAnimalsByTypeQuery;
+import pl.cezaryregec.zoo.actions.animals.get.GetAnimalsQuery;
 import pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalQuery;
 import pl.cezaryregec.zoo.scenario.PolishScenarioTest;
 import pl.cezaryregec.zoo.stages.given.AnimalPrototypes;
@@ -26,7 +28,7 @@ public class AnimalsTest extends PolishScenarioTest<AnimalRepositoryStage, Appli
     @Test
     @Parameters({
             "GIRAFFE, Cezary, 2010, 2, 11, Żyrafa Cezary\\, urodzony 2010-02-11\\, żywy: tak",
-            "ELEPHANT, Krzysztof, 1999, 8, 9, Słoń Krzysztof\\, urodzony 1999-08-09\\, żywy: tak",
+            "ELEPHANT, Krzysztof, 1999, 8, 9, Słoń Krzysztof\\, urodzony 1999-08-09\\, żywy: tak"
     })
     public void dodanieZwierzęcia(AnimalType typ, String imię, Integer rokUrodzenia, Integer miesiącUrodzenia, Integer dzieńUrodzenia, @Quoted String wynik) {
         zakładającŻe().repozytoriumJestPuste();
@@ -37,7 +39,7 @@ public class AnimalsTest extends PolishScenarioTest<AnimalRepositoryStage, Appli
                 .monthOfBirth(miesiącUrodzenia)
                 .dayOfBirth(dzieńUrodzenia)
                 .build());
-        wtedy().wynikZawiera(wynik);
+        wtedy().wynikZawieraTylko(wynik);
         repositoryOutcome
                 .oraz().repozytoriumZawieraZwierzę(imię);
     }
@@ -50,12 +52,10 @@ public class AnimalsTest extends PolishScenarioTest<AnimalRepositoryStage, Appli
     public void udaneUsunięcieZwierzęcia(AnimalType typ, String imię) {
         zakładającŻe().wRepozytoriumZnajdujeSię(AnimalPrototypes.create(typ, imię));
         kiedy().wybieramOpcję$ZParametrami(ZooActionIndex.REMOVE_ANIMAL, RemoveAnimalQuery.builder().name(imię).build());
-        wtedy().wynikZawiera("Usunięto zwierzę");
+        wtedy().wynikZawieraTylko("Usunięto zwierzę");
         repositoryOutcome
                 .oraz().repozytoriumNieZawieraZwierzęcia(imię);
     }
-
-
 
     @Test
     @Parameters({
@@ -65,6 +65,29 @@ public class AnimalsTest extends PolishScenarioTest<AnimalRepositoryStage, Appli
     public void nieudaneUsunięcieZwierzęcia(String imię) {
         zakładającŻe().repozytoriumJestPuste();
         kiedy().wybieramOpcję$ZParametrami(ZooActionIndex.REMOVE_ANIMAL, RemoveAnimalQuery.builder().name(imię).build());
-        wtedy().wynikZawiera("Nie usunięto żadnego zwierzęcia");
+        wtedy().wynikZawieraTylko("Nie usunięto żadnego zwierzęcia");
+    }
+
+    @Test
+    public void wyświetlenieWszystkichZwierząt() {
+        zakładającŻe().wRepozytoriumZnajdujeSię(AnimalPrototypes.createElephant("Tadeusz"))
+                .oraz().wRepozytoriumZnajdujeSię(AnimalPrototypes.createTiger("Ryszard"));
+        kiedy().wybieramOpcję(ZooActionIndex.GET_ANIMALS, GetAnimalsQuery.class);
+        wtedy().wynikZawieraTylko(
+                "Słoń Tadeusz, urodzony 2000-01-01, żywy: tak",
+                "Tygrys Ryszard, urodzony 2000-01-01, żywy: tak"
+        );
+    }
+
+    @Test
+    public void wyświetlenieZwierzątPoTypie() {
+        zakładającŻe().wRepozytoriumZnajdujeSię(AnimalPrototypes.createElephant("Janusz"))
+                .oraz().wRepozytoriumZnajdujeSię(AnimalPrototypes.createGiraffe("Anita"))
+                .oraz().wRepozytoriumZnajdujeSię(AnimalPrototypes.createTiger("Piotr"));
+        kiedy().wybieramOpcję$ZParametrami(ZooActionIndex.GET_ANIMALS_BY_TYPE, GetAnimalsByTypeQuery.builder()
+                        .type(AnimalType.GIRAFFE)
+                        .build()
+        );
+        wtedy().wynikZawieraTylko("Żyrafa Anita, urodzony 2000-01-01, żywy: tak");
     }
 }

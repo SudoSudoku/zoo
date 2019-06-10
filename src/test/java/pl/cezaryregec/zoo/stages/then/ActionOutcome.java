@@ -15,12 +15,12 @@ public class ActionOutcome extends PolishStage<ActionOutcome> {
     @ExpectedScenarioState
     private ResultDto resultDto;
 
-    public ActionOutcome wynikZawiera(@Quoted String wartość) {
+    public ActionOutcome wynikZawieraTylko(@Quoted String wartość) {
         Assertions.assertThat(resultDto.toString()).isEqualTo(wartość);
         return self();
     }
 
-    public ActionOutcome wynikZawiera(@Table(objectFormatting = Table.ObjectFormatting.PLAIN) String... wartości) {
+    public ActionOutcome wynikZawieraTylko(@Table(objectFormatting = Table.ObjectFormatting.PLAIN) String... wartości) {
         String[] values = resultDto.toString().split("\n");
         List<String> expected = Stream.of(wartości).collect(Collectors.toList());
         Assertions.assertThat(values).hasSameElementsAs(expected);
