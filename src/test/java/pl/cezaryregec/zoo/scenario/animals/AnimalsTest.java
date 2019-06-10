@@ -1,5 +1,6 @@
 package pl.cezaryregec.zoo.scenario.animals;
 
+import com.tngtech.jgiven.annotation.Quoted;
 import com.tngtech.jgiven.annotation.ScenarioStage;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -23,18 +24,22 @@ public class AnimalsTest extends PolishScenarioTest<AnimalRepositoryStage, Appli
     AnimalRepositoryOutcome repositoryOutcome;
 
     @Test
-    public void dodanieZwierzęcia() {
+    @Parameters({
+            "GIRAFFE, Cezary, 2010, 2, 11, Żyrafa Cezary\\, urodzony 2010-02-11\\, żywy: tak",
+            "ELEPHANT, Krzysztof, 1999, 8, 9, Słoń Krzysztof\\, urodzony 1999-08-09\\, żywy: tak",
+    })
+    public void dodanieZwierzęcia(AnimalType typ, String imię, Integer rokUrodzenia, Integer miesiącUrodzenia, Integer dzieńUrodzenia, @Quoted String wynik) {
         zakładającŻe().repozytoriumJestPuste();
         kiedy().wybieramOpcję$ZParametrami(ZooActionIndex.ADD_ANIMAL, AddAnimalQuery.builder()
-                .type(AnimalType.GIRAFFE)
-                .name("Cezary")
-                .yearOfBirth(1950)
-                .monthOfBirth(2)
-                .dayOfBirth(11)
+                .type(typ)
+                .name(imię)
+                .yearOfBirth(rokUrodzenia)
+                .monthOfBirth(miesiącUrodzenia)
+                .dayOfBirth(dzieńUrodzenia)
                 .build());
-        wtedy().wynikZawiera("Żyrafa Cezary, urodzony 1950-02-11, żywy: tak");
+        wtedy().wynikZawiera(wynik);
         repositoryOutcome
-                .oraz().repozytoriumZawieraZwierzę("Cezary");
+                .oraz().repozytoriumZawieraZwierzę(imię);
     }
 
     @Test
