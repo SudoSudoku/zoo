@@ -3,3 +3,4 @@ target
 build
 *.iml
 jgiven-reports
+.DS_Store
