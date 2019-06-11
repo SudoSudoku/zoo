@@ -45,6 +45,22 @@ public class AnimalsTest extends PolishScenarioTest<AnimalRepositoryStage, Appli
     }
 
     @Test
+    public void nadpisanieZwierzęcia() {
+        zakładającŻe().wRepozytoriumZnajdujeSię(AnimalPrototypes.createGiraffe("Andrzej"));
+        kiedy().wybieramOpcję$ZParametrami(ZooActionIndex.ADD_ANIMAL, AddAnimalQuery.builder()
+                .type(AnimalType.TIGER)
+                .name("Andrzej")
+                .yearOfBirth(2010)
+                .monthOfBirth(9)
+                .dayOfBirth(26)
+                .build());
+        wtedy().wynikZawieraTylko("Tygrys Andrzej, urodzony 2010-09-26, żywy: tak");
+        repositoryOutcome
+                .oraz().repozytoriumZawieraZwierzę("Andrzej")
+                .oraz().$jestTygrysem("Andrzej");
+    }
+
+    @Test
     @Parameters({
             "TIGER, Grzegorz",
             "GIRAFFE, Alicja"

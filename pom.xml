@@ -79,6 +79,7 @@
                     <configuration>
                         <systemPropertyVariables>
                             <jgiven.report.text.color>true</jgiven.report.text.color>
+                            <jgiven.report.dir>${project.build.directory}/jgiven-reports/json</jgiven.report.dir >
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>

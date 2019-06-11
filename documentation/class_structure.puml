@@ -6,7 +6,8 @@ class ZooApplication {
 }
 
 class ZooConsoleAdapter {
-    + <<constructor>> ZooConsoleAdapter()
+    -zooActionFactory: ZooActionFactory
+    + <<constructor>> ZooConsoleAdapter(zooActionFactory: ZooActionFactory)
     + nextCommand()
 }
 
@@ -33,7 +34,7 @@ abstract class AbstractConsoleAdapter<Actions : ActionFactory> {
     -createOptionsForField(field: Field) : String
 }
 
-ConsoleAdapter <|.. AbstractConsoleAdapter
+AbstractConsoleAdapter ..|> ConsoleAdapter
 
 class  ReflectionUtils {
     -{static} IMPLEMENTATIONS : Map<Class, Object>
@@ -91,7 +92,7 @@ class ZooActionFactory {
 }
 
 ZooActionFactory ..|> ActionFactory : <<bind>> \n ActionIndex -> ZooActionIndex
-ZooActionFactory <-- ZooConsoleAdapter : <<use>>
+ZooActionFactory --o ZooConsoleAdapter
 
 enum ZooActionIndex {
     +GET_MENU
@@ -102,7 +103,7 @@ enum ZooActionIndex {
     +SHUTDOWN
 }
 
-ZooActionIndex <-- ZooActionFactory : <<use>>
+ZooActionFactory --> ZooActionIndex : <<use>>
 
 class ResultDto<Result : Serializable> {
     -result : Result
@@ -167,7 +168,7 @@ class  AddAnimalQuery {
     +getDayOfBirth() : Integer
 }
 
-ActionQuery <|..  AddAnimalQuery
+AddAnimalQuery ..|> ActionQuery
 
 enum AnimalType {
     +GIRAFFE
@@ -200,39 +201,39 @@ class  AnimalFactory {
  AnimalFactory --> Tiger : <<create>>
 
 ZooActionFactory -->  AddAnimalActionExecutor : <<create>>
- AddAnimalActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> AddAnimalQuery
- AddAnimalActionExecutor --> AnimalRepository : <<use>>
+AddAnimalActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> AddAnimalQuery
+AddAnimalActionExecutor --> AnimalRepository : <<use>>
 
 class  GetAnimalsActionExecutor {
     +execute (query : GetAnimalsQuery) : ResultDto
 }
 
- GetAnimalsActionExecutor -->  GetAnimalsQuery : <<use>>
+GetAnimalsActionExecutor -->  GetAnimalsQuery : <<use>>
 
 class  GetAnimalsQuery
 
-ActionQuery <|..  GetAnimalsQuery
+GetAnimalsQuery ..|> ActionQuery
 
 ZooActionFactory -->  GetAnimalsActionExecutor : <<create>>
- GetAnimalsActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> GetAnimalsQuery
- GetAnimalsActionExecutor --> AnimalRepository : <<use>>
+GetAnimalsActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> GetAnimalsQuery
+GetAnimalsActionExecutor --> AnimalRepository : <<use>>
 
 class  GetAnimalsByTypeActionExecutor {
     +execute (query : GetAnimalsByTypeQuery) : ResultDto
 }
 
- GetAnimalsByTypeActionExecutor -->  GetAnimalsByTypeQuery : <<use>>
+GetAnimalsByTypeActionExecutor -->  GetAnimalsByTypeQuery : <<use>>
 
 class  GetAnimalsByTypeQuery {
     -type : AnimalType
 
     +getType() : AnimalType
 }
-ActionQuery <|..  GetAnimalsByTypeQuery
+GetAnimalsByTypeQuery ..|> ActionQuery
 
 ZooActionFactory -->  GetAnimalsByTypeActionExecutor : <<create>>
- GetAnimalsByTypeActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> GetAnimalsByTypeQuery
- GetAnimalsByTypeActionExecutor --> AnimalRepository : <<use>>
+GetAnimalsByTypeActionExecutor ..|> ActionExecutor : <<bind>> \n Query -> GetAnimalsByTypeQuery
+GetAnimalsByTypeActionExecutor --> AnimalRepository : <<use>>
 
 class RemoveAnimalExecutor {
     +execute (query : RemoveAnimalQuery) : ResultDto
@@ -245,7 +246,7 @@ class RemoveAnimalQuery {
 
     +getName() : String
 }
-ActionQuery <|.. RemoveAnimalQuery
+RemoveAnimalQuery ..|> ActionQuery
 
 ZooActionFactory --> RemoveAnimalExecutor : <<create>>
 RemoveAnimalExecutor ..|> ActionExecutor : <<bind>> \n Query -> RemoveAnimalQuery
@@ -260,7 +261,7 @@ ShutdownActionExecutor --> ShutdownRequestException : <<create>>
 
 class ShutdownQuery
 
-ActionQuery <|.. ShutdownQuery
+ShutdownQuery ..|> ActionQuery
 ZooActionFactory --> ShutdownActionExecutor : <<create>>
 
 

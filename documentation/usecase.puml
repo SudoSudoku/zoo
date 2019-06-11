@@ -8,7 +8,7 @@ rectangle "system ZOO" {
     (dodanie zwierzęcia) -- :Repozytorium zwierząt:
     (podanie typu) <. (dodanie zwierzęcia) : <<include>>
     (podanie imienia) <. (dodanie zwierzęcia) : <<include>>
-    (podanie wieku) <. (dodanie zwierzęcia)  : <<include>>
+    (podanie daty urodzenia) <. (dodanie zwierzęcia)  : <<include>>
     :Pracownik ZOO: - (wyświetlenie listy zwierząt)
     (wyświetlenie listy zwierząt) -- :Repozytorium zwierząt:
     :Pracownik ZOO: - (wyświetlenie zwierząt po typie)
