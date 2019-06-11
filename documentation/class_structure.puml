@@ -1,5 +1,6 @@
 @startuml
 interface java.io.Serializable
+scale 2
 
 class ZooApplication {
     + {static} main(args: String[])
@@ -11,13 +12,13 @@ class ZooConsoleAdapter {
     + nextCommand()
 }
 
-interface ConsoleAdapter<Actions : ActionFactory> {
+interface ConsoleAdapter<Actions : ActionFactory, ActionIndex : Enum> {
     +nextCommand()
     +isRunning() : boolean
-    +execute()
+    +execute(index: ActionIndex)
 }
 
-abstract class AbstractConsoleAdapter<Actions : ActionFactory> {
+abstract class AbstractConsoleAdapter<Actions : ActionFactory, ActionIndex : Enum> {
     - {static} DESERIALIZATION_CHAIN : List<Class<? extends DeserializationLink>>
 
     #actions : Actions
@@ -27,7 +28,7 @@ abstract class AbstractConsoleAdapter<Actions : ActionFactory> {
     # <<constructor>> AbstractConsoleAdapter(Actions actions)
     +{abstract} nextCommand()
     +isRunning() : boolean
-    +execute()
+    +execute(index: ActionIndex)
     #<Type : Object> readInput(type : Class<Type>) : Type
     #format(result : ResultDto) : String
     #shutDown()
@@ -87,13 +88,13 @@ interface ActionFactory<ActionIndex : Enum> {
 }
 
 class ZooActionFactory {
-    -{static} EXECUTOR_MAP : Map<ZooActionIndex, ActionExecutor>
+    -{static} EXECUTOR_MAP : Map<ZooActionIndex, Class<? extends ActionExecutor>>
     +create(index: ActionIndex) : ActionExecutor
 }
 
 ZooActionFactory ..|> ActionFactory : <<bind>> \n ActionIndex -> ZooActionIndex
 ZooActionFactory --o ZooConsoleAdapter
-
+'
 enum ZooActionIndex {
     +GET_MENU
     +ADD_ANIMAL
@@ -144,7 +145,7 @@ class MenuDictionary {
 
 class MenuItemFormatter {
     -<<constructor>> MenuItemFormatter()
-    + {static} map(index : ZooActionIndex)
+    + {static} map(index : ZooActionIndex) : String
 }
 
 GetMenuActionExecutor --> MenuItemFormatter : <<use>>
@@ -279,20 +280,24 @@ abstract class Animal {
     +getName() : String
     +getBirthday() : Date
     +isAlive() : boolean
+    +toString() : String
 }
 
 LivingCreature <|.. Animal
 
 class Giraffe {
     +<<constructor>> Giraffe(birthday: Date)
+    +toString() : String
 }
 
 class Elephant {
     +<<constructor>> Elephant(birthday: Date)
+    +toString() : String
 }
 
 class Tiger {
     +<<constructor>> Tiger(birthday: Date)
+    +toString() : String
 }
 
 Animal <|-- Giraffe

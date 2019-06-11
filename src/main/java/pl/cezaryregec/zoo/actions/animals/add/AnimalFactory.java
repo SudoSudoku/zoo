@@ -9,14 +9,14 @@ import java.time.LocalDate;
 
 class AnimalFactory {
     static Animal create(AddAnimalQuery query) {
-        LocalDate calendar = LocalDate.of(query.getYearOfBirth(), query.getMonthOfBirth(), query.getDayOfBirth());
+        LocalDate birthday = LocalDate.of(query.getYearOfBirth(), query.getMonthOfBirth(), query.getDayOfBirth());
         switch (query.getType()) {
             case GIRAFFE:
-                return new Giraffe(query.getName(), calendar);
+                return new Giraffe(query.getName(), birthday);
             case ELEPHANT:
-                return new Elephant(query.getName(), calendar);
+                return new Elephant(query.getName(), birthday);
             case TIGER:
-                return new Tiger(query.getName(), calendar);
+                return new Tiger(query.getName(), birthday);
         }
 
         throw new IllegalStateException("Unknown animal type");
