@@ -4,11 +4,11 @@ import org.junit.Test;
 import pl.cezaryregec.zoo.scenario.PolishScenarioTest;
 import pl.cezaryregec.zoo.actions.ZooActionIndex;
 import pl.cezaryregec.zoo.actions.menu.GetMenuQuery;
-import pl.cezaryregec.zoo.stages.given.AnimalRepositoryStage;
+import pl.cezaryregec.zoo.stages.given.AnimalRepositoryState;
 import pl.cezaryregec.zoo.stages.then.ActionOutcome;
 import pl.cezaryregec.zoo.stages.when.ApplicationAction;
 
-public class MenuTest extends PolishScenarioTest<AnimalRepositoryStage, ApplicationAction, ActionOutcome> {
+public class MenuTest extends PolishScenarioTest<AnimalRepositoryState, ApplicationAction, ActionOutcome> {
 
     @Test
     public void menu() {

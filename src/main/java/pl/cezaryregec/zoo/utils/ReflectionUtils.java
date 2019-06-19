@@ -32,14 +32,17 @@ public class ReflectionUtils {
     public static <T> T createInstance(Class<T> type) {
         try {
             Constructor<?>[] declaredConstructors = type.getDeclaredConstructors();
-            if (declaredConstructors.length > 1) {
-                throw new InstantiationException("More than 1 constructor is present, cannot instantiate " + type.getCanonicalName());
-            }
             if (declaredConstructors.length == 0) {
                 throw new InstantiationException("Cannot make an instance of an interface: " + type.getCanonicalName());
             }
 
             Constructor constructor = declaredConstructors[0];
+            for (Constructor c : declaredConstructors) {
+                if (c.getParameterTypes().length == 0) {
+                    constructor = c;
+                }
+            }
+
             Class[] parameterTypes = constructor.getParameterTypes();
             List<Object> parameters = new ArrayList<>();
             for (Class<?> parameter : parameterTypes) {

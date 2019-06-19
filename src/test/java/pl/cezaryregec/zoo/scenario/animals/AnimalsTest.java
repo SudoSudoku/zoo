@@ -14,13 +14,13 @@ import pl.cezaryregec.zoo.actions.animals.get.GetAnimalsQuery;
 import pl.cezaryregec.zoo.actions.animals.remove.RemoveAnimalQuery;
 import pl.cezaryregec.zoo.scenario.PolishScenarioTest;
 import pl.cezaryregec.zoo.stages.given.AnimalPrototypes;
-import pl.cezaryregec.zoo.stages.given.AnimalRepositoryStage;
+import pl.cezaryregec.zoo.stages.given.AnimalRepositoryState;
 import pl.cezaryregec.zoo.stages.then.ActionOutcome;
 import pl.cezaryregec.zoo.stages.then.AnimalRepositoryOutcome;
 import pl.cezaryregec.zoo.stages.when.ApplicationAction;
 
 @RunWith(JUnitParamsRunner.class)
-public class AnimalsTest extends PolishScenarioTest<AnimalRepositoryStage, ApplicationAction, ActionOutcome> {
+public class AnimalsTest extends PolishScenarioTest<AnimalRepositoryState, ApplicationAction, ActionOutcome> {
 
     @ScenarioStage
     AnimalRepositoryOutcome repositoryOutcome;

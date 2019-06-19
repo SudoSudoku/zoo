@@ -8,6 +8,11 @@
     <artifactId>zoo</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
     <repositories>
         <repository>
             <id>central</id>
@@ -81,21 +86,6 @@
                             <jgiven.report.text.color>true</jgiven.report.text.color>
                             <jgiven.report.dir>${project.build.directory}/jgiven-reports/json</jgiven.report.dir >
                         </systemPropertyVariables>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>com.tngtech.jgiven</groupId>
-                    <artifactId>jgiven-maven-plugin</artifactId>
-                    <version>0.17.1</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <format>html</format>
                     </configuration>
                 </plugin>
             </plugins>
